@@ -1,4 +1,6 @@
-# routing
+# route-optimization
+
+This repo solves the vehicle routing problem and was implemented for a large Canadian freight company. We take a manifest of deliveries to be made in a day and produce an set of individual manifests and routes for a fleet of trucks. The algorithms can account for vehicle capacities, and having multiple truck depots to dispatch from.
 
 Conventions - Address file should start with depot (starting/ending point for TSP) first
 
