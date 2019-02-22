@@ -14,15 +14,15 @@ class CreateDistanceCallback(object):
     self.matrix= data.values.tolist()
 
 
-
+# Method to pull distance information from distance matrix.
   def Distance(self, from_node, to_node):
     return self.matrix[from_node][to_node]
 def main():
-
-  fname = '243884' #Automate this later..
-
+# Enter filename of a manifest. Will be automated in production version.
+  fname = '243884'
+# Run Java code GraphHopper on manifest to create distance matrix as csv.
   os.system('java -jar dmatrix.jar ./manifests/'+fname +'.csv')
-
+# Load manifest data and split.
   df = pd.read_csv('./manifests/'+fname+'.csv')
   city_names = df['Address'][:]
   lats = df['Latitude'][:]
@@ -34,7 +34,8 @@ def main():
   # Create routing model
   if tsp_size > 0:
     # TSP of size tsp_size
-    # Second argument = 1 to build a single tour (it's a TSP).
+    # Second argument = 1 to build a single tour (used for TSP with single delivery truck rather than full
+    # vehicle routing problem with fleet).
     # Nodes are indexed from 0 to tsp_size - 1. By default the start of
     # the route is node 0.
     routing = pywrapcp.RoutingModel(tsp_size, 1, 0) #had to add depot index
