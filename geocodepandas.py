@@ -1,0 +1,60 @@
+import geocoder
+import pandas as pd
+from itertools import groupby
+import os
+from haversine import haversine
+import csv
+import numpy as np
+
+#read in only the address and latlng data
+#pandas is more versatile than np.genfromtxt
+data= pd.read_csv('day_manifest.csv',usecols=(5,7,8,9,10,11,12)).as_matrix()
+depots=pd.read_csv('depot_locations.csv',usecols=(1,2,3)).as_matrix()
+#print(depots) #to see data format
+#haversine finds distance between (lat,long) points
+#h=haversine((depots[0][0],depots[0][1]),(depots[1][0],depots[1][1]))
+
+#data=data[:4] #for testing on a smaller data set
+
+#some entries do not have latlng data
+#for those we geocode
+for el in data:
+    if el[4]==0:
+        g=geocoder.google(el[0]+' '+el[2]+' '+el[3])
+        if g.latlng != []:
+            el[4]=g.lat
+            el[5]=g.lng
+
+            
+#create a csv for each manifest
+#each manifest has a unique TripNumber in the original data
+#group data by TripNumber
+sort=[list(v) for l,v in groupby(sorted(data,key=lambda x:x[6]),lambda x:x[6])]
+
+os.chdir('./manifests/')
+#for each TripNumber output a csv.
+for el in sort:
+    out=pd.DataFrame([["Latitude","Longitude","Address"]])
+    tripnum=el[0][6]
+    #Identify the closest depot and add it to top of manifest
+    depot_dist=[haversine((en[0],en[1]),(el[0][4],el[0][5]))for en in depots]
+    index_min = min(range(len(depot_dist)), key=depot_dist.__getitem__)
+    close_depot = pd.DataFrame([depots[index_min]])
+    out=out.append(close_depot,ignore_index=True)
+
+    for em in el:
+
+        df=pd.DataFrame([[em[4],em[5], em[0]+' '+em[2]+' '+em[3]+' '+em[1]]])
+        out=out.append(df,ignore_index=True)
+    out.to_csv(str(tripnum)+'.csv',',',index=False,header=False,quoting=csv.QUOTE_NONNUMERIC)
+
+#code below puts all data into one csv    
+#Format data and use pandas to output a csv
+#output=pd.DataFrame([["latitude","longitude","address"]])
+#for el in data:
+#    df=pd.DataFrame([[el[4],el[5],el[0]+' '+el[2]+' '+el[3]+' '+el[1]]])
+#    output=output.append(df,ignore_index=True)
+#output.to_csv('output.csv',',',index=False,header=False)
+    
+
+##TODO: There does appear to be some duplicates in the data given to us

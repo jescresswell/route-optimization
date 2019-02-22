@@ -1,0 +1,42 @@
+Description:
+
+Our package runs in three steps. 
+
+First geocoderpandas.py takes a day_manifest.csv, cleans up the data, turns addresses into lat/long coordinates, then outputs each truck’s manifest to a csv file, along with the information for the closest depot.
+
+Second we create a distance matrix for a truck’s manifest. For this we use graphhopper which is written in java. The creation of a distance matrix has been packaged into dmatrix.jar which contains a graphhopper distribution, a java csv package, and the dmatrix script
+
+Currently we run this through the tsp.py script, but it takes some work to set up.
+
+Finally the tsp.py script uses google’s or-tools package to find a solution to the TSP on a given distance matrix and displays the optimized route on a graphhopper map. 
+
+GENERAL SETUP:
+
+Clone routing repo from github. Clone graphhopper repo from github and place inside routing. You must create a folder with name ‘manifests’ at the same level as geocoderspandas.py for the output to use.
+
+JAVA SETUP: Install latest Java Runtime Environment (JRE) from Oracle website. Probably good to install the Java Dev Kit (JDK). Install a Java IDE, IntelliJ or Netbeans are nice, and configure it. Install Maven which will help deal with the dependencies between java packages. 
+
+GRAPHHOPPER SETUP:
+
+Graphhopper requires some map data to make routes. For this project we need some Ontario/Quebec data. In the terminal navigate to the graphhopper folder and run the graphhopper.sh executable: this will try to initialize a server to view your map data. Use the command
+
+./graphhopper.sh web north-america_canada_ontario.pbf
+
+If the map file ‘north-america_canada_ontario.pbf’ is not in your graphhopper directory, the command will attempt to collect it from online. If this collection doesn’t seem to be working, you can find map data by hand at http://download.geofabrik.de/north-america/canada/ontario.html for instance. Place the map data in the graphhopper folder and rename it to ‘north-america_canada_ontario.pbf’ (the dmatrix script requires this name, so you could alternatively edit the dmatrix script)
+
+The shell command will first process the map data and create a ‘north-america_canada_ontario-gh’ folder within graphhopper.  Then it will initialize a server on your local computer to view the map. The server can be checked at localhost:8989 in your browser, it should show Ontario. 
+
+The tsp.py script requires this server to be active. 
+
+
+TODO: 
+Get more map data
+
+geocoderpandas.py is not perfect with the geocoding, especially if the address is a bit non-specific. At the moment it geocodes using google’s free service which works very well. This may not do large quantities though.
+
+geocoderpandas.py assigns a depot to each manifest by simply finding the closest depot to the first delivery site. This may not always be appropriate. Currently the information about the five depots is in depot_locations.csv.
+
+tsp.py uses a single manifest name and spits out a route for that manifest. We should automate it to go through a list of manifests. 
+
+tsp.py displays the route in a locally hosted graphhopper map, but the route info can also be extracted in a GPX file. We could automate it so that the process starts with a day_manifest.csv, and produces a GPX file for each truck which can then be viewed independently. 
+

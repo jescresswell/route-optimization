@@ -1,0 +1,27 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red38\green38\blue38;}
+\margl1440\margr1440\vieww12800\viewh9000\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Install latest Java Runtime Environment. Probably good to install the Java Dev Kit.\
+\
+Install a Java IDE, IntelliJ is nice, and configure it.\
+\
+Download relevant map (ontario) here {\field{\*\fldinst{HYPERLINK "http://download.geofabrik.de/north-america/canada/ontario.html"}}{\fldrslt http://download.geofabrik.de/north-america/canada/ontario.html}} Get the latest version as an osm.pbf file\
+\
+Download the GraphHopper server at {\field{\*\fldinst{HYPERLINK "https://oss.sonatype.org/content/groups/public/com/graphhopper/graphhopper-web/0.9-SNAPSHOT/"}}{\fldrslt https://oss.sonatype.org/content/groups/public/com/graphhopper/graphhopper-web/0.9-SNAPSHOT/}}\
+\
+Unzip file, and add map data to the resulting folder. \
+\
+Mapping can be initialized in the terminal. First change directory to where the above folder is. Then run the following, with MAP.osm.pbf replaced with the filename of your map\
+\
+\pard\pardeftab720\sl320\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+java -jar *.jar jetty.resourcebase=webapp config=config-example.properties datareader.file=MAP.osm.pbf\
+\
+The result will say Started server at HTTP 8989 which is hosted locally on your machine. Go to {\field{\*\fldinst{HYPERLINK "http://localhost:8989/"}}{\fldrslt http://localhost:8989/}} to view your map and calculate routes. \
+\
+Some steps will differ if you want the calculations to be done on the backend, this is only useful if you want to see the map data and play with it. \
+\
+java -jar *.jar jetty.resourcebase=webapp config=config-example.properties datareader.file=ontario-latest.osm.pbf}
