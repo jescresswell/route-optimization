@@ -1,12 +1,12 @@
+# Solves the Travelling Salesman Problem for our manifests
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
-import numpy as np
 import pandas as pd
 import os
 
 # Distance callback
 class CreateDistanceCallback(object):
-  """Create callback to calculate distances between points."""
+   """Create callback to calculate distances between points."""
   def __init__(self,fname):
     """Array of distances between points."""
 
